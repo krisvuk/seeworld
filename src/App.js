@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import Loading from './Loading';
+import Header from './Header';
 import $ from 'jquery';
+
+import jvectormap from 'jvectormap'
 
 import SeeWorldLogo from '../assets/seeWorldLogo.png';
 import WorldMap from '../assets/worldMap.jpg';
@@ -11,6 +13,10 @@ var appStyle = {
   backgroundPosition: 'center',
   width: window.innerWidth,
   height: window.innerHeight
+};
+
+var headerStyle = {
+  display: "none"
 };
 
 var loadingLogoStyle = {
@@ -33,6 +39,11 @@ var welcomeMessageStyle = {
   textAlign: "center"
 };
 
+var mapStyle = {
+  width: "600px",
+  height: "450px"
+};
+
 class App extends Component {
 
 
@@ -46,6 +57,7 @@ class App extends Component {
   componentDidMount () {
     this.loadingAnimation();
     this.mockFetchData();
+    $('#world-map').jvectormap({map: 'world_mill'});
   }
 
   loadingAnimation () {
@@ -53,6 +65,14 @@ class App extends Component {
       this.toggle = !this.toggle;
       $("#loading-box").stop().fadeTo(1000, this.toggle ? 0.2 : 1);
     }, 1000);
+  }
+
+  loadHeader () {
+    $("#header").fadeIn(1000);
+  }
+
+  loadMap () {
+
   }
 
   removeLoading () {
@@ -64,7 +84,9 @@ class App extends Component {
   }
 
   removeWelcomeMessage () {
-    $("#welcome-message").fadeOut(2000);
+    $("#welcome-message").fadeOut(2000, () => {
+      this.loadHeader();
+    });
   }
 
   showWelcomeMessage () {
@@ -94,10 +116,14 @@ class App extends Component {
 
     return (
       <div style={ appStyle }>
+        <div id="header" style={ headerStyle }>
+          <Header />
+        </div>
         <div id="loading-box" style={ loadingStyle }>
           <img style={ loadingLogoStyle } src={SeeWorldLogo} />
         </div>
-        <div id="welcome-message" style={ welcomeMessageStyle }><span>Discover</span> <span>&</span> <span>Explore</span></div>        
+        <div id="welcome-message" style={ welcomeMessageStyle }><span>Discover</span> <span>&</span> <span>Explore</span></div>
+        <div id="world-map" style={ mapStyle }></div>      
       </div>
     );
   }
