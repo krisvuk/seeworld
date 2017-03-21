@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import Header from './Header';
 import $ from 'jquery';
-
-import jvectormap from 'jvectormap'
-
+import Header from './Header';
+import World from './World';
 import SeeWorldLogo from '../assets/seeWorldLogo.png';
-import WorldMap from '../assets/worldMap.jpg';
+import WorldMapImage from '../assets/worldMap.jpg';
 
 var appStyle = {
   position: "absolute",
-  backgroundImage: 'url('+WorldMap+')',
+  backgroundImage: 'url('+WorldMapImage+')',
   backgroundPosition: 'center',
   width: window.innerWidth,
   height: window.innerHeight
@@ -44,11 +42,17 @@ var mapStyle = {
   height: "450px"
 };
 
+var worldMapStyle = {
+  width: window.innerWidth,
+  height: window.innerHeight
+};
+
 class App extends Component {
 
 
   constructor (props) {
     super(props);
+    $("#world-map").fadeOut(2000);
     this.state = {
       loading: true
     };
@@ -57,7 +61,6 @@ class App extends Component {
   componentDidMount () {
     this.loadingAnimation();
     this.mockFetchData();
-    $('#world-map').jvectormap({map: 'world_mill'});
   }
 
   loadingAnimation () {
@@ -67,12 +70,14 @@ class App extends Component {
     }, 1000);
   }
 
-  loadHeader () {
-    $("#header").fadeIn(1000);
+  loadMap () {
+    $("#world-map").fadeIn(2000);
   }
 
-  loadMap () {
-
+  loadHeader () {
+    $("#header").fadeIn(1000, () => {
+      this.loadMap();
+    });
   }
 
   removeLoading () {
@@ -123,7 +128,9 @@ class App extends Component {
           <img style={ loadingLogoStyle } src={SeeWorldLogo} />
         </div>
         <div id="welcome-message" style={ welcomeMessageStyle }><span>Discover</span> <span>&</span> <span>Explore</span></div>
-        <div id="world-map" style={ mapStyle }></div>      
+        <div id="world-map" style={ worldMapStyle }>
+          <World />
+        </div>
       </div>
     );
   }

@@ -28,7 +28,7 @@ class Header extends Component {
     return (
       <div style={ headerStyle }>
       	<img src={ SeeWorldLogo } style={ logoStyle }/>
-      	<a href="https://www.thoughtsahead.com"><div id="author-tag" style={ authorTagStyle }>Kris Vukasinovic</div></a>
+      	<a href="https://www.thoughtsahead.com"><div id="author-tag" style={ authorTagStyle }><u>By: Kris Vukasinovic</u></div></a>
       </div>
     );
   }
