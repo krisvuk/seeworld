@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
 import Header from './Header';
-import World from './World';
+import SearchBox from './SearchBox';
 import SeeWorldLogo from '../assets/seeWorldLogo.png';
 import WorldMapImage from '../assets/worldMap.jpg';
 
@@ -37,15 +37,11 @@ var welcomeMessageStyle = {
   textAlign: "center"
 };
 
-var mapStyle = {
-  width: "600px",
-  height: "450px"
-};
-
-var worldMapStyle = {
-  width: window.innerWidth,
-  height: window.innerHeight
-};
+var searchBoxStyle = {
+  display: "none",
+  textAlign: "center",
+  marginTop: "300px"
+}; 
 
 class App extends Component {
 
@@ -54,7 +50,8 @@ class App extends Component {
     super(props);
     $("#world-map").fadeOut(2000);
     this.state = {
-      loading: true
+      loading: true,
+      displayMap: false
     };
   }
 
@@ -70,14 +67,8 @@ class App extends Component {
     }, 1000);
   }
 
-  loadMap () {
-    $("#world-map").fadeIn(2000);
-  }
-
   loadHeader () {
-    $("#header").fadeIn(1000, () => {
-      this.loadMap();
-    });
+    $("#header").fadeIn(1000);
   }
 
   removeLoading () {
@@ -91,6 +82,7 @@ class App extends Component {
   removeWelcomeMessage () {
     $("#welcome-message").fadeOut(2000, () => {
       this.loadHeader();
+      this.renderSearchBox();
     });
   }
 
@@ -111,13 +103,21 @@ class App extends Component {
   // simulates 5 seconds of data gathering
   mockFetchData () {
     setTimeout(() => {
-      this.setState({loading: false});
+      this.setState({loading: false,
+                    displayMap: true});
     }, 5000);
+  }
+
+  renderSearchBox () {
+    $("#search-box").fadeIn(1000);
   }
 
   render () {
 
-    this.checkLoading();
+    if(!this.state.loading) {
+      // loads the welcome message & header & search box
+      this.removeLoading();
+    }
 
     return (
       <div style={ appStyle }>
@@ -125,11 +125,13 @@ class App extends Component {
           <Header />
         </div>
         <div id="loading-box" style={ loadingStyle }>
-          <img style={ loadingLogoStyle } src={SeeWorldLogo} />
+          <img src={SeeWorldLogo} style={ loadingLogoStyle }/>
         </div>
-        <div id="welcome-message" style={ welcomeMessageStyle }><span>Discover</span> <span>&</span> <span>Explore</span></div>
-        <div id="world-map" style={ worldMapStyle }>
-          <World />
+        <div id="welcome-message" style={ welcomeMessageStyle }>
+          Discover & Explore
+        </div>
+        <div id="search-box" style={ searchBoxStyle }>
+          <SearchBox />
         </div>
       </div>
     );
