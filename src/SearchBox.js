@@ -14,16 +14,43 @@ var searchBoxStyle = {
 
 class SearchBox extends Component {
 
-	componentDidMount () {}
+  constructor (props) {
+    super(props);
+    this.state = {
+      keywords: ""
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+	componentDidMount () {
+		// bind 'Enter' to searchWeb()
+		$("#search-box").keyup((event) => {
+	    if(event.keyCode == 13){
+	      this.searchWeb();
+	    }
+		});
+	}
 
 	searchWeb () {
-		client.search( 'toronto' );
+		if (this.state.keywords !== "") {
+			console.log(client.search( this.state.keywords ));
+		}
+	}
+
+	handleChange (e) {
+		this.setState({ keywords:e.target.value });
 	}
 
   render () {
     return (
       <div>
-      	<input id="search-box" style={ searchBoxStyle } type="text" placeholder="Enter a location" />
+      	<input 
+      		id="search-box" 
+      		style={ searchBoxStyle } 
+      		type="text" 
+      		placeholder="Enter a location"
+      		onChange={this.handleChange} />
       </div>
     );
   }
