@@ -3,6 +3,7 @@ import $ from 'jquery';
 import Header from './Header';
 import SearchBox from './SearchBox';
 import Images from './Images';
+import IntroSequence from './IntroSequence';
 import SeeWorldLogo from '../assets/seeWorldLogo.png';
 import WorldMapImage from '../assets/worldMap.jpg';
 
@@ -18,26 +19,6 @@ var headerStyle = {
   display: "none"
 };
 
-var loadingLogoStyle = {
-  display: "inline-block",
-  width: "200px"
-};
-
-var loadingStyle = {
-  display: "block",
-  textAlign: "center",
-  marginTop: "300px"
-};
-
-var welcomeMessageStyle = {
-  fontFamily: "'Oregano', cursive",
-  fontSize: "2em",
-  color: "#eee",
-  marginTop: "300px",
-  display: "none",
-  textAlign: "center"
-};
-
 var searchBoxStyle = {
   display: "none",
   textAlign: "center",
@@ -50,15 +31,19 @@ var imagesContainerStyle = {
 
 class App extends Component {
 
-
   constructor (props) {
     super(props);
     $("#world-map").fadeOut(2000);
     this.state = {
       loading: true,
-      displayMap: false,
       data: {}
     };
+
+    setTimeout(() => {
+      this.loadSearchBox();
+      this.loadHeader();
+    },12000);
+
     this.imageData = this.imageData.bind(this);
   }
 
@@ -73,14 +58,6 @@ class App extends Component {
         this.removeImages();
       }
     });
-    this.introSequence();
-  }
-
-  introSequence () {
-    this.loadingAnimation();
-    setTimeout(() => {
-      this.removeLoading();
-    }, 3000);
   }
 
   loadingAnimation () {
@@ -92,34 +69,6 @@ class App extends Component {
 
   loadHeader () {
     $("#header").fadeIn(1000);
-  }
-
-  removeLoading () {
-    clearInterval(this.intervalId);
-    $("#loading-box").fadeOut(() => {
-      this.showWelcomeMessage();
-    });
-  }
-
-  removeWelcomeMessage () {
-    $("#welcome-message").fadeOut(2000, () => {
-      this.loadHeader();
-      this.loadSearchBox();
-    });
-  }
-
-  showWelcomeMessage () {
-    $("#welcome-message").fadeIn(3000, () => {
-      this.removeWelcomeMessage();
-    });
-  }
-
-  // simulates 5 seconds of data gathering
-  mockFetchData () {
-    setTimeout(() => {
-      this.setState({loading: false,
-                     displayMap: true});
-    }, 3000);
   }
 
   loadSearchBox () {
@@ -143,11 +92,8 @@ class App extends Component {
         <div id="header" style={ headerStyle }>
           <Header />
         </div>
-        <div id="loading-box" style={ loadingStyle }>
-          <img src={SeeWorldLogo} style={ loadingLogoStyle }/>
-        </div>
-        <div id="welcome-message" style={ welcomeMessageStyle }>
-          Discover & Explore
+        <div id="loading-box">
+          <IntroSequence />
         </div>
         <div id="search-box" style={ searchBoxStyle }>
           <SearchBox getImageData={ this.imageData }/>
