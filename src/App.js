@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import Header from './Header';
 import SearchBox from './SearchBox';
+import Images from './Images';
 import SeeWorldLogo from '../assets/seeWorldLogo.png';
 import WorldMapImage from '../assets/worldMap.jpg';
 
@@ -41,7 +42,11 @@ var searchBoxStyle = {
   display: "none",
   textAlign: "center",
   marginTop: "300px"
-}; 
+};
+
+var imagesContainerStyle = {
+  width: "100%"
+};
 
 class App extends Component {
 
@@ -51,13 +56,31 @@ class App extends Component {
     $("#world-map").fadeOut(2000);
     this.state = {
       loading: true,
-      displayMap: false
+      displayMap: false,
+      data: {}
     };
+    this.imageData = this.imageData.bind(this);
   }
 
   componentDidMount () {
+    window.addEventListener('keydown', function(e) {
+      if(e.keyCode == 32 && e.target == document.body) {
+        e.preventDefault();
+      }
+    });
+    $("body").keyup((event) => {
+      if(event.keyCode === 32){
+        this.removeImages();
+      }
+    });
+    this.introSequence();
+  }
+
+  introSequence () {
     this.loadingAnimation();
-    this.mockFetchData();
+    setTimeout(() => {
+      this.removeLoading();
+    }, 3000);
   }
 
   loadingAnimation () {
@@ -74,7 +97,6 @@ class App extends Component {
   removeLoading () {
     clearInterval(this.intervalId);
     $("#loading-box").fadeOut(() => {
-    }, () => {
       this.showWelcomeMessage();
     });
   }
@@ -82,43 +104,40 @@ class App extends Component {
   removeWelcomeMessage () {
     $("#welcome-message").fadeOut(2000, () => {
       this.loadHeader();
-      this.renderSearchBox();
+      this.loadSearchBox();
     });
   }
 
   showWelcomeMessage () {
-    $("#welcome-message").fadeIn(2000, () => {
-      setTimeout(() => {
-        this.removeWelcomeMessage();
-      }, 2000);
+    $("#welcome-message").fadeIn(3000, () => {
+      this.removeWelcomeMessage();
     });
-  }
-
-  checkLoading () {
-    if (!this.state.loading) {
-      this.removeLoading();
-    }
   }
 
   // simulates 5 seconds of data gathering
   mockFetchData () {
     setTimeout(() => {
       this.setState({loading: false,
-                    displayMap: true});
-    }, 5000);
+                     displayMap: true});
+    }, 3000);
   }
 
-  renderSearchBox () {
+  loadSearchBox () {
     $("#search-box").fadeIn(1000);
   }
 
+  removeImages () {
+    $('#images-container').fadeOut(1000,() => {
+      this.loadSearchBox();
+    });
+  }
+
+  imageData (data) {
+    this.setState({data: data});
+    $('#images-container').fadeIn(1000);
+  }
+
   render () {
-
-    if(!this.state.loading) {
-      // loads the welcome message & header & search box
-      this.removeLoading();
-    }
-
     return (
       <div style={ appStyle }>
         <div id="header" style={ headerStyle }>
@@ -131,7 +150,10 @@ class App extends Component {
           Discover & Explore
         </div>
         <div id="search-box" style={ searchBoxStyle }>
-          <SearchBox />
+          <SearchBox getImageData={ this.imageData }/>
+        </div>
+        <div id="images-container" style={ imagesContainerStyle }>
+          <Images imageData={this.state.data}/>
         </div>
       </div>
     );
